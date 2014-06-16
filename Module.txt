@@ -1,0 +1,9 @@
+﻿Name: Yammer Widget for Orchard
+AntiForgery: enabled
+Author: Marc Obaldo
+Website: http://codewisp.com/
+Version: 1.0
+OrchardVersion: 1.0
+Description: This is a widget that displays posts from Yammer network feeds
+Category: Codewisp
+Dependencies: Orchard.Widgets, Orchard.Scripting.Lightweight

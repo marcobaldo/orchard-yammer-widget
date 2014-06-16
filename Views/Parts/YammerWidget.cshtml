@@ -1,0 +1,22 @@
+﻿@using Codewisp.Yammer.Models
+@{
+    Style.Include("yammer.css").AtHead();
+}
+
+<div class="yammer-feed-container">
+    <ul class="yammer-feed">
+        @foreach (YammerWidgetFeedItem item in Model.Feed)
+        {
+            <li class="yammer-feed-item">
+                <div class="yammer-feed-item-container">
+                    <div class="avatar"><img src="@item.Author.MugshotUrl" /></div>
+                    <div class="content">
+                        <span class="author"><a target="_blank" href="@item.Author.ProfileUrl">@item.Author.Name</a></span>
+                        <span class="text">@Html.Raw(item.Title)</span>
+                        <span class="date">@item.Date.ToString("MMMM dd, yyyy") · <a target="_blank" href="@item.Url">Details</a></span>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+</div>

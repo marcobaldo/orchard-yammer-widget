@@ -1,0 +1,104 @@
+﻿@model Codewisp.Yammer.Models.YammerWidgetPart
+<fieldset>
+    <legend>Yammer Feed Settings</legend>
+
+    <div class="editor-label">
+        @Html.LabelFor(m => m.ItemsToDisplay, @T("Items to Display"))
+    </div>
+    <div class="editor-field">
+        @Html.TextBoxFor(model => model.ItemsToDisplay)
+        @Html.ValidationMessageFor(model => model.ItemsToDisplay)
+    </div>
+
+    <div class="editor-label">
+        @Html.LabelFor(m => m.CacheMinutes, @T("Cache timeout (in minutes)"))
+    </div>
+    <div class="editor-field">
+        @Html.TextBoxFor(model => model.CacheMinutes)
+        @Html.ValidationMessageFor(model => model.CacheMinutes)
+    </div>
+
+    @if (Model.AuthAccessToken != null)
+    {
+        <div class="editor-label">
+            @Html.LabelFor(m => m.SelectedNetworkAccessToken, @T("Feed to display"))
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(m => m.SelectedNetworkAccessToken, Model.NetworkList)
+            @Html.ValidationMessageFor(model => model.SelectedNetworkAccessToken)
+        </div>
+    }
+</fieldset>
+<fieldset>
+    <legend>Yammer App Credentials</legend>
+
+    <div class="editor-label">
+        @Html.LabelFor(m => m.ClientId, @T("Yammer App Client ID"))
+        <span class="hint">@T("You can get the app's client details at https://www.yammer.com/client_applications/") </span>
+    </div>
+    <div class="editor-field">
+        @Html.TextBoxFor(model => model.ClientId, new { @class = "textMedium" })
+        @Html.ValidationMessageFor(model => model.ClientId)
+    </div>
+
+    <div class="editor-label">
+        @Html.LabelFor(m => m.ClientSecret, @T("Yammer App Client Secret"))
+    </div>
+    <div class="editor-field">
+        @Html.TextBoxFor(model => model.ClientSecret, new { @class = "textMedium" })
+        @Html.ValidationMessageFor(model => model.ClientSecret)
+        <span class="hint">@T("You can get the app's client details at https://www.yammer.com/client_applications/") </span>
+    </div>
+</fieldset>
+<fieldset>
+    <legend>Yammer Authentication Information</legend>
+
+    @if (String.IsNullOrEmpty(Model.ClientId) || String.IsNullOrEmpty(Model.ClientSecret))
+    {
+        // Client Id & Secret is not configured!
+        <div class="editor-label">
+            Authorize Yammer
+        </div>
+        <div class="editor-field">
+            To authorize Yammer, please provide the client ID and secret first.
+        </div>
+    }
+    else
+    {
+        // App credentials provided but the user hasn't signed in or accepted permissions yet
+        if (Model.AuthAccessToken == null)
+        {
+            <div class="editor-label">
+                Authorize Yammer
+            </div>
+            <div class="editor-field">
+                <a href="https://www.yammer.com/dialog/oauth?client_id=@Model.ClientId&redirect_uri=@Model.RedirectUri">
+                    <img src="@Href("~/Modules/Codewisp.Yammer/Content/Images/yammer-signin.gif")" />
+                </a>
+            </div>
+        }
+        // App credentials are available, show the info!
+        else
+        {
+            <a href="@Model.RedirectUri&clearCredentials=true">Clear credentials</a>
+            <br />
+            <br />
+            <div class="editor-label">Main Access Token</div>
+            <div class="editor-field hint">@Model.AuthAccessToken</div>
+            var networkName = string.Empty;
+            foreach (var network in Model.NetworkList)
+            {
+                if (network.Value == @Model.SelectedNetworkAccessToken)
+                {
+                    networkName = network.Text;
+                    break;
+                }
+            }
+            <div class="editor-label">Network Name</div>
+            <div class="editor-field hint">@networkName</div>
+            <div class="editor-label">Network Access Token</div>
+            <div class="editor-field hint">@Model.SelectedNetworkAccessToken</div>
+        }
+    }
+</fieldset>
+<hr />
